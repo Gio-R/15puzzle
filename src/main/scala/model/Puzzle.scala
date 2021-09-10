@@ -1,16 +1,20 @@
 package model
 
-class Puzzle private (val tiles: Map[(Int, Int), Tile]):
-  private val size = scala.math.sqrt(tiles.size).toInt
-  private val _tilesMap = scala.collection.mutable.Map(tiles.toSeq: _*)
+import scala.collection.mutable as Mutable
 
+class Puzzle private (val tiles: Map[Tile, (Int, Int)]):
   require(tiles.size > 3)
   require(scala.math.sqrt(tiles.size).isValidInt)
-  require(tiles.find(_._2 == Empty()).map(_._1._1).isDefined)
+  require(tiles.contains(Empty()))
+
+  private val size = scala.math.sqrt(tiles.size).toInt
+  private val _tilesMap = Mutable.Map(tiles.toSeq: _*)
 
   def tilesMap = _tilesMap.toMap
 
-  
+  def moveTile(tileNumber: Int): Boolean = ???
+    // require(tileNumber < size * size)
+
 end Puzzle
 
 object Puzzle:
@@ -22,13 +26,17 @@ object Puzzle:
       tiles = generateRandomTilesSequence(tileMaxNumber = puzzleSize - 1)
     Puzzle(tiles)
 
-  def createPuzzleFromTiles(tiles: Map[(Int, Int), Tile]): Puzzle =
+  def createPuzzleFromTiles(tiles: Map[Tile, (Int, Int)]): Puzzle =
     Puzzle(tiles)
 
-  private def generateRandomTilesSequence(tileMaxNumber: Int): Map[(Int, Int), Tile] =
+  private def generateRandomTilesSequence(tileMaxNumber: Int): Map[Tile, (Int, Int)] =
     val size = scala.math.sqrt(tileMaxNumber + 1).toInt
-    val tiles = (1 to tileMaxNumber).map(Number(_))
-    val map = scala.collection.mutable.Map[(Int, Int), Tile]()
+    val tiles = Mutable.ArrayBuffer()
+                       .appendAll((1 to tileMaxNumber))
+                       .map(Number(_))
+                       .filter(_.isInstanceOf[Tile])
+                       .map(_.asInstanceOf[Tile])
+    val map = Mutable.Map[Tile, (Int, Int)]()
     var emptyPositioned = false
     while (!emptyPositioned)
       map.clear()
@@ -40,15 +48,18 @@ object Puzzle:
           emptyPositioned = true
           Empty()
         else
-          tiles(0)
-        map.addOne(((i, j), tile))
+          val index = scala.util.Random.between(0, tiles.size)
+          val tile = tiles(index)
+          tiles -= tile
+          tile
+        map.addOne((tile, (i, j)))
     map.toMap
 
   def isPuzzleSolvable(puzzle: Puzzle): Boolean =
-    val emptyTileRow = puzzle.tiles.find(_._2 == Empty()).map(_._1._1)
+    val emptyTileRow = puzzle.tiles.get(Empty()).map(_._1)
     assert(emptyTileRow.isDefined)
     val orderedTiles = puzzle.tiles
-                             .map((p, t) => (((p._1 - 1) * puzzle.size + p._2), t))
+                             .map((t, p) => (((p._1 - 1) * puzzle.size + p._2), t))
                              .toSeq
                              .sortBy(_._1)
                              .map(_._2)
