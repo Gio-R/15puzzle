@@ -1,6 +1,8 @@
 package model
 
 class PuzzleSuite extends munit.FunSuite:
+  val testMap = 
+    
   test("Size less than 4 is not allowed") {
     intercept[java.lang.IllegalArgumentException](Puzzle.createRandomPuzzle(3))
   }
@@ -102,5 +104,81 @@ class PuzzleSuite extends munit.FunSuite:
                       )
     val puzzle = Puzzle.createPuzzleFromTiles(tilesMap)                                       
     assertEquals(obtained = puzzle.tilesMap, expected = tilesMap)
+  }
+
+  test("Numbered tile and empty tile can be switched if adjacent on the same line") {
+    val puzzle = Puzzle.createPuzzleFromTiles(Map((Number(13), (1, 1)),
+                                                  (Number(2), (1, 2)),
+                                                  (Number(10), (1, 3)),
+                                                  (Number(3), (1, 4)),
+                                                  (Number(1), (2, 1)),
+                                                  (Number(12), (2, 2)),
+                                                  (Number(8), (2, 3)),
+                                                  (Number(4), (2, 4)),
+                                                  (Number(5), (3, 1)),
+                                                  (Empty(), (3, 2)),
+                                                  (Number(9), (3, 3)),
+                                                  (Number(6), (3, 4)),
+                                                  (Number(15), (4, 1)),
+                                                  (Number(14), (4, 2)),
+                                                  (Number(11), (4, 3)),
+                                                  (Number(7), (4, 4)),
+                                                  )
+                                              )  
+    assert(puzzle.moveTile(Number(9)))
+    assertEquals(puzzle.tilesMap.get(Number(9)), Some((3, 2)))
+    assertEquals(puzzle.tilesMap.get(Empty()), Some((3, 3)))
+    assert(puzzle.moveTile(Number(9)))
+    assertEquals(puzzle.tilesMap.get(Number(9)), Some((3, 3)))
+    assertEquals(puzzle.tilesMap.get(Empty()), Some((3, 2)))
+  }
+
+  test("Numbered tile and empty tile can be switched if adjacent on the same column") {
+    val puzzle = Puzzle.createPuzzleFromTiles(Map((Number(13), (1, 1)),
+                                                  (Number(2), (1, 2)),
+                                                  (Number(10), (1, 3)),
+                                                  (Number(3), (1, 4)),
+                                                  (Number(1), (2, 1)),
+                                                  (Number(12), (2, 2)),
+                                                  (Number(8), (2, 3)),
+                                                  (Number(4), (2, 4)),
+                                                  (Number(5), (3, 1)),
+                                                  (Empty(), (3, 2)),
+                                                  (Number(9), (3, 3)),
+                                                  (Number(6), (3, 4)),
+                                                  (Number(15), (4, 1)),
+                                                  (Number(14), (4, 2)),
+                                                  (Number(11), (4, 3)),
+                                                  (Number(7), (4, 4)),
+                                                  )
+                                              )  
+    assert(puzzle.moveTile(Number(12)))
+    assertEquals(puzzle.tilesMap.get(Number(12)), Some((3, 2)))
+    assertEquals(puzzle.tilesMap.get(Empty()), Some((2, 2)))
+    assert(puzzle.moveTile(Number(12)))
+    assertEquals(puzzle.tilesMap.get(Number(12)), Some((2, 2)))
+    assertEquals(puzzle.tilesMap.get(Empty()), Some((3, 2)))
+  }
+  
+  test("Numbered tile and empty tile can not be switched if not adjacent in any way") {
+    val puzzle = Puzzle.createPuzzleFromTiles(Map((Number(13), (1, 1)),
+                                                  (Number(2), (1, 2)),
+                                                  (Number(10), (1, 3)),
+                                                  (Number(3), (1, 4)),
+                                                  (Number(1), (2, 1)),
+                                                  (Number(12), (2, 2)),
+                                                  (Number(8), (2, 3)),
+                                                  (Number(4), (2, 4)),
+                                                  (Number(5), (3, 1)),
+                                                  (Empty(), (3, 2)),
+                                                  (Number(9), (3, 3)),
+                                                  (Number(6), (3, 4)),
+                                                  (Number(15), (4, 1)),
+                                                  (Number(14), (4, 2)),
+                                                  (Number(11), (4, 3)),
+                                                  (Number(7), (4, 4)),
+                                                  )
+                                              )  
+    assert(!puzzle.moveTile(Number(7)))
   }
       

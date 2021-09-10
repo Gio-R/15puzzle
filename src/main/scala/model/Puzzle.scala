@@ -2,19 +2,40 @@ package model
 
 import scala.collection.mutable as Mutable
 
-class Puzzle private (val tiles: Map[Tile, (Int, Int)]):
+class Puzzle private (tiles: Map[Tile, (Int, Int)]):
   require(tiles.size > 3)
   require(scala.math.sqrt(tiles.size).isValidInt)
   require(tiles.contains(Empty()))
 
   private val size = scala.math.sqrt(tiles.size).toInt
   private val _tilesMap = Mutable.Map(tiles.toSeq: _*)
+    
+  private def areAdjacent(tile1: Tile, tile2: Tile): Boolean =
+    assert(_tilesMap.contains(tile1))
+    assert(_tilesMap.contains(tile2))
+    val tile1Position = _tilesMap.get(tile1).get
+    val tile2Position = _tilesMap.get(tile2).get
+    (tile1Position._1 == tile2Position._1 && math.abs(tile1Position._2 - tile2Position._2) == 1)
+      || (tile1Position._2 == tile2Position._2 && math.abs(tile1Position._1 - tile2Position._1) == 1)
+
+  private def switchTiles(tile1: Tile, tile2: Tile): Unit = 
+    assert(_tilesMap.contains(tile1))
+    assert(_tilesMap.contains(tile2))
+    val tile1Position = _tilesMap.get(tile1).get
+    val tile2Position = _tilesMap.get(tile2).get
+    _tilesMap(tile1) = tile2Position
+    _tilesMap(tile2) = tile1Position
 
   def tilesMap = _tilesMap.toMap
 
-  def moveTile(tileNumber: Int): Boolean = ???
-    // require(tileNumber < size * size)
-
+  def moveTile(tile: Number): Boolean =
+    require(tile.n < size * size)
+    if areAdjacent(tile, Empty()) then
+      switchTiles(tile, Empty())
+      true
+    else
+      false
+   
 end Puzzle
 
 object Puzzle:
@@ -56,9 +77,9 @@ object Puzzle:
     map.toMap
 
   def isPuzzleSolvable(puzzle: Puzzle): Boolean =
-    val emptyTileRow = puzzle.tiles.get(Empty()).map(_._1)
+    val emptyTileRow = puzzle.tilesMap.get(Empty()).map(_._1)
     assert(emptyTileRow.isDefined)
-    val orderedTiles = puzzle.tiles
+    val orderedTiles = puzzle.tilesMap
                              .map((t, p) => (((p._1 - 1) * puzzle.size + p._2), t))
                              .toSeq
                              .sortBy(_._1)
