@@ -67,4 +67,26 @@ class PuzzleSuite extends munit.FunSuite:
                                                                     )
                                         )
   }
+
+  test("Puzzle is correctly created from a map of tiles") {
+    val tilesMap = Map(((1, 1), Number(13)),
+                       ((1, 2), Number(2)),
+                       ((1, 3), Number(10)),
+                       ((1, 4), Number(3)),
+                       ((2, 1), Number(1)),
+                       ((2, 2), Number(12)),
+                       ((2, 3), Number(8)),
+                       ((2, 4), Number(4)),
+                       ((3, 1), Number(5)),
+                       ((3, 2), Empty()),
+                       ((3, 3), Number(9)),
+                       ((3, 4), Number(6)),
+                       ((4, 1), Number(15)),
+                       ((4, 2), Number(14)),
+                       ((4, 3), Number(11)),
+                       ((4, 4), Number(7)),
+                      )
+    val puzzle = Puzzle.createPuzzleFromTiles(tilesMap)                                       
+    assertEquals(obtained = puzzle.tilesMap, expected = tilesMap)
+  }
       

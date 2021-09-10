@@ -1,10 +1,17 @@
 package model
 
-class Puzzle private (private val tiles: Map[(Int, Int), Tile]):
+class Puzzle private (val tiles: Map[(Int, Int), Tile]):
   private val size = scala.math.sqrt(tiles.size).toInt
+  private val _tilesMap = scala.collection.mutable.Map(tiles.toSeq: _*)
+
   require(tiles.size > 3)
   require(scala.math.sqrt(tiles.size).isValidInt)
   require(tiles.find(_._2 == Empty()).map(_._1._1).isDefined)
+
+  def tilesMap = _tilesMap.toMap
+
+  
+end Puzzle
 
 object Puzzle:
   def createRandomPuzzle(puzzleSize: Int): Puzzle =
@@ -59,6 +66,7 @@ object Puzzle:
         (inversions % 2 == 0 && emptyTileRow.forall(_ % 2 == 0))
           || (inversions % 2 != 0 && emptyTileRow.forall(_ % 2 != 0))
       )))
+end Puzzle
       
          
 
