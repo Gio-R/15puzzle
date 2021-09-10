@@ -1,4 +1,4 @@
-package model
+package puzzle.model
 
 class PuzzleSuite extends munit.FunSuite:
   val testMap = 

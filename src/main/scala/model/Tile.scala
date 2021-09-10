@@ -1,4 +1,4 @@
-package model
+package puzzle.model
 
 sealed trait Tile
 
