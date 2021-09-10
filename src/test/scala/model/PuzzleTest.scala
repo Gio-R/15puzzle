@@ -186,4 +186,48 @@ class PuzzleSuite extends munit.FunSuite:
     val puzzle = Puzzle.createRandomPuzzle(9)
     intercept[IllegalArgumentException](puzzle.moveTile(Number(10)))
   }
+
+  test("Not resolved puzzle is recognized as such") {
+    val puzzle = Puzzle.createPuzzleFromTiles(Map((Number(13), (1, 1)),
+                                                  (Number(2), (1, 2)),
+                                                  (Number(10), (1, 3)),
+                                                  (Number(3), (1, 4)),
+                                                  (Number(1), (2, 1)),
+                                                  (Number(12), (2, 2)),
+                                                  (Number(8), (2, 3)),
+                                                  (Number(4), (2, 4)),
+                                                  (Number(5), (3, 1)),
+                                                  (Empty(), (3, 2)),
+                                                  (Number(9), (3, 3)),
+                                                  (Number(6), (3, 4)),
+                                                  (Number(15), (4, 1)),
+                                                  (Number(14), (4, 2)),
+                                                  (Number(11), (4, 3)),
+                                                  (Number(7), (4, 4)),
+                                                  )
+                                              ) 
+    assert(!puzzle.isResolved)
+  }
+
+  test("Resolved puzzle is recognized as such") {
+    val puzzle = Puzzle.createPuzzleFromTiles(Map((Number(1), (1, 1)),
+                                                  (Number(2), (1, 2)),
+                                                  (Number(3), (1, 3)),
+                                                  (Number(4), (1, 4)),
+                                                  (Number(5), (2, 1)),
+                                                  (Number(6), (2, 2)),
+                                                  (Number(7), (2, 3)),
+                                                  (Number(8), (2, 4)),
+                                                  (Number(9), (3, 1)),
+                                                  (Number(10), (3, 2)),
+                                                  (Number(11), (3, 3)),
+                                                  (Number(12), (3, 4)),
+                                                  (Number(13), (4, 1)),
+                                                  (Number(14), (4, 2)),
+                                                  (Number(15), (4, 3)),
+                                                  (Empty(), (4, 4)),
+                                                  )
+                                              ) 
+    assert(puzzle.isResolved)
+  }
       

@@ -14,7 +14,26 @@ class Puzzle private (tiles: Map[Tile, (Int, Int)]):
 
   private val size = scala.math.sqrt(tiles.size).toInt
   private val _tilesMap = Mutable.Map(tiles.toSeq: _*)
-    
+
+  def tilesMap = _tilesMap.toMap
+
+  def moveTile(tile: Number): Boolean =
+    require(tile.n < size * size, "Tile number too big for this puzzle")
+    if areAdjacent(tile, Empty()) then
+      switchTiles(tile, Empty())
+      true
+    else
+      false
+   
+  def isResolved: Boolean =
+    val orderedTiles = _tilesMap.map((t, p) => (((p._1 - 1) * this.size + p._2), t))
+                                .filter((p, t) => t != Empty())
+                                .filter((p, t) => t.isInstanceOf[Number])
+                                .map((p, t) => (p, t.asInstanceOf[Number]))
+                                .toSeq
+                                .sortBy(_._1)
+    orderedTiles.size == this.size * this.size - 1 && orderedTiles.forall((p, t) => p == t.n)
+
   private def areAdjacent(tile1: Tile, tile2: Tile): Boolean =
     val tile1Position = getTilePosition(tile1)
     val tile2Position = getTilePosition(tile2)
@@ -31,16 +50,6 @@ class Puzzle private (tiles: Map[Tile, (Int, Int)]):
     assert(_tilesMap.contains(tile), "Tile is not in the puzzle")
     _tilesMap.get(tile).get
 
-  def tilesMap = _tilesMap.toMap
-
-  def moveTile(tile: Number): Boolean =
-    require(tile.n < size * size, "Tile number too big for this puzzle")
-    if areAdjacent(tile, Empty()) then
-      switchTiles(tile, Empty())
-      true
-    else
-      false
-   
 end Puzzle
 
 object Puzzle:
