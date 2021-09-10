@@ -24,8 +24,7 @@ class PuzzleSuite extends munit.FunSuite:
     val numbers = puzzle.tilesMap
                         .keys
                         .filter(_.isInstanceOf[Number])
-                        .map(_.asInstanceOf[Number])
-                        .map(_.n)
+                        .map(_.asInstanceOf[Number].n)
                         .toSet
     assertEquals((1 to maxTileNumber).toSet, numbers)
   }
@@ -75,13 +74,23 @@ class PuzzleSuite extends munit.FunSuite:
   }
 
   test("Puzzle without empty tile cannot be created") {
-    intercept[IllegalArgumentException](Puzzle.createPuzzleFromTiles(Map((Number(13), (1, 1)),
+    intercept[IllegalArgumentException](Puzzle.createPuzzleFromTiles(Map((Number(1), (1, 1)),
                                                                          (Number(2), (1, 2)),
-                                                                         (Number(10), (1, 3)),
-                                                                         (Number(3), (1, 4)),
+                                                                         (Number(3), (1, 3)),
+                                                                         (Number(4), (1, 4)),
                                                                         ) 
                                                                     )
                                         )
+  }
+
+  test("Tiles map with missing numbered tiles are not accepted") {
+    intercept[IllegalArgumentException](Puzzle.createPuzzleFromTiles(Map((Number(1), (1, 1)),
+                                                                         (Number(2), (1, 2)),
+                                                                         (Number(5), (1, 3)),
+                                                                         (Empty(), (1, 4)),
+                                                                        ) 
+                                                                    )
+                                       )
   }
 
   test("Puzzle is correctly created from a map of tiles") {

@@ -10,6 +10,12 @@ class Puzzle private (tiles: Map[Tile, (Int, Int)]):
     j <- 1 to scala.math.sqrt(tiles.size).toInt
   do
     require(tiles.values.toSet.contains((i, j)), "Illegal tile position")
+  require(tiles.keys
+               .filter(_.isInstanceOf[Number])
+               .map(_.asInstanceOf[Number].n)
+               .toSet
+               .equals((1 to tiles.size - 1).toSet), 
+          "Not all numbered tiles are present")
   require(tiles.contains(Empty()), "There is no Empty tile in map")
 
   private val size = scala.math.sqrt(tiles.size).toInt
