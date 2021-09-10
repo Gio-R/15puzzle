@@ -1,6 +1,6 @@
 package model
 
-class Puzzle (private val tiles: Map[(Int, Int), Tile]):
+class Puzzle private (private val tiles: Map[(Int, Int), Tile]):
   private val size = scala.math.sqrt(tiles.size).toInt
   require(tiles.size > 3)
   require(scala.math.sqrt(tiles.size).isValidInt)
@@ -13,6 +13,9 @@ object Puzzle:
     var tiles = generateRandomTilesSequence(tileMaxNumber = puzzleSize - 1)
     while (!isPuzzleSolvable(Puzzle(tiles)))
       tiles = generateRandomTilesSequence(tileMaxNumber = puzzleSize - 1)
+    Puzzle(tiles)
+
+  def createPuzzleFromTiles(tiles: Map[(Int, Int), Tile]): Puzzle =
     Puzzle(tiles)
 
   private def generateRandomTilesSequence(tileMaxNumber: Int): Map[(Int, Int), Tile] =
