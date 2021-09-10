@@ -1,4 +1,4 @@
-package model
+package puzzle.model
 
 import scala.collection.mutable as Mutable
 
