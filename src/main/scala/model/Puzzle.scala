@@ -3,33 +3,38 @@ package model
 import scala.collection.mutable as Mutable
 
 class Puzzle private (tiles: Map[Tile, (Int, Int)]):
-  require(tiles.size > 3)
-  require(scala.math.sqrt(tiles.size).isValidInt)
-  require(tiles.contains(Empty()))
+  require(tiles.size > 3, "Too few tiles in map")
+  require(scala.math.sqrt(tiles.size).isValidInt, "Tiles can not form a square")
+  for
+    i <- 1 to scala.math.sqrt(tiles.size).toInt
+    j <- 1 to scala.math.sqrt(tiles.size).toInt
+  do
+    require(tiles.values.toSet.contains((i, j)), "Illegal tile position")
+  require(tiles.contains(Empty()), "There is no Empty tile in map")
 
   private val size = scala.math.sqrt(tiles.size).toInt
   private val _tilesMap = Mutable.Map(tiles.toSeq: _*)
     
   private def areAdjacent(tile1: Tile, tile2: Tile): Boolean =
-    assert(_tilesMap.contains(tile1))
-    assert(_tilesMap.contains(tile2))
-    val tile1Position = _tilesMap.get(tile1).get
-    val tile2Position = _tilesMap.get(tile2).get
+    val tile1Position = getTilePosition(tile1)
+    val tile2Position = getTilePosition(tile2)
     (tile1Position._1 == tile2Position._1 && math.abs(tile1Position._2 - tile2Position._2) == 1)
       || (tile1Position._2 == tile2Position._2 && math.abs(tile1Position._1 - tile2Position._1) == 1)
 
   private def switchTiles(tile1: Tile, tile2: Tile): Unit = 
-    assert(_tilesMap.contains(tile1))
-    assert(_tilesMap.contains(tile2))
-    val tile1Position = _tilesMap.get(tile1).get
-    val tile2Position = _tilesMap.get(tile2).get
+    val tile1Position = getTilePosition(tile1)
+    val tile2Position = getTilePosition(tile2)
     _tilesMap(tile1) = tile2Position
     _tilesMap(tile2) = tile1Position
+
+  private def getTilePosition(tile: Tile): (Int, Int) =
+    assert(_tilesMap.contains(tile), "Tile is not in the puzzle")
+    _tilesMap.get(tile).get
 
   def tilesMap = _tilesMap.toMap
 
   def moveTile(tile: Number): Boolean =
-    require(tile.n < size * size)
+    require(tile.n < size * size, "Tile number too big for this puzzle")
     if areAdjacent(tile, Empty()) then
       switchTiles(tile, Empty())
       true
@@ -40,8 +45,8 @@ end Puzzle
 
 object Puzzle:
   def createRandomPuzzle(puzzleSize: Int): Puzzle =
-    require(puzzleSize > 3)
-    require(scala.math.sqrt(puzzleSize).isValidInt)
+    require(puzzleSize > 3, "Puzzle too small")
+    require(scala.math.sqrt(puzzleSize).isValidInt, "Puzzle is not a square")
     var tiles = generateRandomTilesSequence(tileMaxNumber = puzzleSize - 1)
     while (!isPuzzleSolvable(Puzzle(tiles)))
       tiles = generateRandomTilesSequence(tileMaxNumber = puzzleSize - 1)
@@ -78,7 +83,7 @@ object Puzzle:
 
   def isPuzzleSolvable(puzzle: Puzzle): Boolean =
     val emptyTileRow = puzzle.tilesMap.get(Empty()).map(_._1)
-    assert(emptyTileRow.isDefined)
+    assert(emptyTileRow.isDefined, "There is no empty tile in the puzzle")
     val orderedTiles = puzzle.tilesMap
                              .map((t, p) => (((p._1 - 1) * puzzle.size + p._2), t))
                              .toSeq

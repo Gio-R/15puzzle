@@ -181,4 +181,9 @@ class PuzzleSuite extends munit.FunSuite:
                                               )  
     assert(!puzzle.moveTile(Number(7)))
   }
+
+  test("Non existent tile cannot be switched") {
+    val puzzle = Puzzle.createRandomPuzzle(9)
+    intercept[IllegalArgumentException](puzzle.moveTile(Number(10)))
+  }
       
