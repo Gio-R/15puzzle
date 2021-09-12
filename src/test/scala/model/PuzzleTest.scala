@@ -134,12 +134,14 @@ class PuzzleSuite extends munit.FunSuite:
                                                   (Number(7), (4, 4)),
                                                   )
                                               )  
-    assert(puzzle.moveTile(Number(9)))
-    assertEquals(puzzle.tilesMap.get(Number(9)), Some((3, 2)))
-    assertEquals(puzzle.tilesMap.get(Empty()), Some((3, 3)))
-    assert(puzzle.moveTile(Number(9)))
-    assertEquals(puzzle.tilesMap.get(Number(9)), Some((3, 3)))
-    assertEquals(puzzle.tilesMap.get(Empty()), Some((3, 2)))
+    val puzzle2 = puzzle.moveTile(Number(9))
+    assert(!puzzle.equals(puzzle2))
+    assertEquals(puzzle2.tilesMap.get(Number(9)), Some((3, 2)))
+    assertEquals(puzzle2.tilesMap.get(Empty()), Some((3, 3)))
+    val puzzle3 = puzzle2.moveTile(Number(9))
+    assert(!puzzle2.equals(puzzle3))
+    assertEquals(puzzle3.tilesMap.get(Number(9)), Some((3, 3)))
+    assertEquals(puzzle3.tilesMap.get(Empty()), Some((3, 2)))
   }
 
   test("Numbered tile and empty tile can be switched if adjacent on the same column") {
@@ -161,12 +163,14 @@ class PuzzleSuite extends munit.FunSuite:
                                                   (Number(7), (4, 4)),
                                                   )
                                               )  
-    assert(puzzle.moveTile(Number(12)))
-    assertEquals(puzzle.tilesMap.get(Number(12)), Some((3, 2)))
-    assertEquals(puzzle.tilesMap.get(Empty()), Some((2, 2)))
-    assert(puzzle.moveTile(Number(12)))
-    assertEquals(puzzle.tilesMap.get(Number(12)), Some((2, 2)))
-    assertEquals(puzzle.tilesMap.get(Empty()), Some((3, 2)))
+    val puzzle2 = puzzle.moveTile(Number(12))
+    assert(!puzzle.equals(puzzle2))
+    assertEquals(puzzle2.tilesMap.get(Number(12)), Some((3, 2)))
+    assertEquals(puzzle2.tilesMap.get(Empty()), Some((2, 2)))
+    val puzzle3 = puzzle2.moveTile(Number(12))
+    assert(!puzzle2.equals(puzzle3))
+    assertEquals(puzzle3.tilesMap.get(Number(12)), Some((2, 2)))
+    assertEquals(puzzle3.tilesMap.get(Empty()), Some((3, 2)))
   }
   
   test("Numbered tile and empty tile can not be switched if not adjacent in any way") {
@@ -188,7 +192,7 @@ class PuzzleSuite extends munit.FunSuite:
                                                   (Number(7), (4, 4)),
                                                   )
                                               )  
-    assert(!puzzle.moveTile(Number(7)))
+    assertEquals(puzzle.moveTile(Number(7)), puzzle)
   }
 
   test("Non existent tile cannot be switched") {

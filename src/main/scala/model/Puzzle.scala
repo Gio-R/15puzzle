@@ -2,7 +2,7 @@ package puzzle.model
 
 import scala.collection.mutable as Mutable
 
-class Puzzle private (tiles: Map[Tile, (Int, Int)]):
+class Puzzle private (private val tiles: Map[Tile, (Int, Int)]):
   require(tiles.size > 3, "Too few tiles in map")
   require(scala.math.sqrt(tiles.size).isValidInt, "Tiles can not form a square")
   for
@@ -19,25 +19,23 @@ class Puzzle private (tiles: Map[Tile, (Int, Int)]):
   require(tiles.contains(Empty()), "There is no Empty tile in map")
 
   private val size = scala.math.sqrt(tiles.size).toInt
-  private val _tilesMap = Mutable.Map(tiles.toSeq: _*)
 
-  def tilesMap = _tilesMap.toMap
+  def tilesMap = tiles
 
-  def moveTile(tile: Number): Boolean =
+  def moveTile(tile: Number): Puzzle =
     require(tile.n < size * size, "Tile number too big for this puzzle")
     if areAdjacent(tile, Empty()) then
-      switchTiles(tile, Empty())
-      true
+      Puzzle(switchTiles(tile, Empty()))
     else
-      false
+      this
    
   def isResolved: Boolean =
-    val orderedTiles = _tilesMap.map((t, p) => (((p._1 - 1) * this.size + p._2), t))
-                                .filter((p, t) => t != Empty())
-                                .filter((p, t) => t.isInstanceOf[Number])
-                                .map((p, t) => (p, t.asInstanceOf[Number]))
-                                .toSeq
-                                .sortBy(_._1)
+    val orderedTiles = tiles.map((t, p) => (((p._1 - 1) * this.size + p._2), t))
+                            .filter((p, t) => t != Empty())
+                            .filter((p, t) => t.isInstanceOf[Number])
+                            .map((p, t) => (p, t.asInstanceOf[Number]))
+                            .toSeq
+                            .sortBy(_._1)
     orderedTiles.size == this.size * this.size - 1 && orderedTiles.forall((p, t) => p == t.n)
 
   private def areAdjacent(tile1: Tile, tile2: Tile): Boolean =
@@ -46,15 +44,14 @@ class Puzzle private (tiles: Map[Tile, (Int, Int)]):
     (tile1Position._1 == tile2Position._1 && math.abs(tile1Position._2 - tile2Position._2) == 1)
       || (tile1Position._2 == tile2Position._2 && math.abs(tile1Position._1 - tile2Position._1) == 1)
 
-  private def switchTiles(tile1: Tile, tile2: Tile): Unit = 
+  private def switchTiles(tile1: Tile, tile2: Tile): Map[Tile, (Int, Int)] = 
     val tile1Position = getTilePosition(tile1)
     val tile2Position = getTilePosition(tile2)
-    _tilesMap(tile1) = tile2Position
-    _tilesMap(tile2) = tile1Position
+    (tiles + (tile1 -> tile2Position)) + (tile2 -> tile1Position)
 
   private def getTilePosition(tile: Tile): (Int, Int) =
-    assert(_tilesMap.contains(tile), "Tile is not in the puzzle")
-    _tilesMap.get(tile).get
+    assert(tiles.contains(tile), "Tile is not in the puzzle")
+    tiles.get(tile).get
 
 end Puzzle
 
