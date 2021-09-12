@@ -27,6 +27,10 @@ class PuzzleService(model: Model):
         Logger(webServerLoggerName).debug("requested current puzzle")
         Ok.apply(model.getCurrentPuzzle().asJson)
 
+      case GET -> Root / "current" / "resolved" => 
+        Logger(webServerLoggerName).debug("requested if current puzzle is resolved")
+        Ok.apply(model.isCurrentPuzzleResolved().asJson)
+
       case req @ POST -> Root / "new" =>
         req.decode[Int] { i =>
           Logger(webServerLoggerName).debug(s"requested new puzzle of size $i")

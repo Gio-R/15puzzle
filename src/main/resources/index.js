@@ -6,6 +6,7 @@ window.onload = () => {
         const xhr = new XMLHttpRequest()
         xhr.onreadystatechange = () => {
             if (xhr.responseText !== "" && xhr.readyState == 4) {
+                document.getElementById("results").innerHTML = ""
                 showPuzzle(JSON.parse(xhr.responseText))
             }
         }
@@ -18,6 +19,7 @@ window.onload = () => {
         const xhr = new XMLHttpRequest()
         xhr.onreadystatechange = () => {
             if (xhr.responseText !== "" && xhr.readyState == 4) {
+                document.getElementById("results").innerHTML = ""
                 showPuzzle(JSON.parse(xhr.responseText))
             }
         }
@@ -27,7 +29,6 @@ window.onload = () => {
 }
 
 function showPuzzle(puzzle) {
-    console.log(puzzle)
     const size = puzzle.length
     const side = Math.sqrt(size)
     const div = document.getElementById("puzzle")
@@ -58,6 +59,14 @@ function moveTile(tileValue) {
     xhr.onreadystatechange = () => {
         if (xhr.responseText !== "" && xhr.readyState == 4 && xhr.status === 200) {
             showPuzzle(JSON.parse(xhr.responseText))
+            const xhr2 = new XMLHttpRequest()
+            xhr2.onreadystatechange = () => {
+                if (xhr2.responseText !== "" && xhr2.readyState == 4 && xhr2.status === 200) {
+                    document.getElementById("results").innerHTML = xhr2.responseText === "true" ? "YOU WON" : ""
+                }
+            }
+            xhr2.open("GET", "/puzzle/current/resolved")
+            xhr2.send()
         }
     }
     xhr.open('POST', '/puzzle/current/moveTile')
