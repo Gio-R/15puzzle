@@ -243,4 +243,44 @@ class PuzzleSuite extends munit.FunSuite:
                                               ) 
     assert(puzzle.isResolved)
   }
+
+  test("Puzzles with same tiles in same positions are equals") {
+    val puzzle = Puzzle.createPuzzleFromTiles(Map((Number(13), (1, 1)),
+                                                  (Number(2), (1, 2)),
+                                                  (Number(10), (1, 3)),
+                                                  (Number(3), (1, 4)),
+                                                  (Number(1), (2, 1)),
+                                                  (Number(12), (2, 2)),
+                                                  (Number(8), (2, 3)),
+                                                  (Number(4), (2, 4)),
+                                                  (Number(5), (3, 1)),
+                                                  (Empty(), (3, 2)),
+                                                  (Number(9), (3, 3)),
+                                                  (Number(6), (3, 4)),
+                                                  (Number(15), (4, 1)),
+                                                  (Number(14), (4, 2)),
+                                                  (Number(11), (4, 3)),
+                                                  (Number(7), (4, 4)),
+                                                  )
+                                              ) 
+    val puzzle2 = Puzzle.createPuzzleFromTiles(Map((Number(13), (1, 1)),
+                                                   (Number(2), (1, 2)),
+                                                   (Number(10), (1, 3)),
+                                                   (Number(3), (1, 4)),
+                                                   (Number(1), (2, 1)),
+                                                   (Number(12), (2, 2)),
+                                                   (Number(8), (2, 3)),
+                                                   (Number(4), (2, 4)),
+                                                   (Number(5), (3, 1)),
+                                                   (Empty(), (3, 2)),
+                                                   (Number(9), (3, 3)),
+                                                   (Number(6), (3, 4)),
+                                                   (Number(15), (4, 1)),
+                                                   (Number(14), (4, 2)),
+                                                   (Number(11), (4, 3)),
+                                                   (Number(7), (4, 4)),
+                                                   )
+                                               ) 
+    assert(puzzle.equals(puzzle2))
+  }
       

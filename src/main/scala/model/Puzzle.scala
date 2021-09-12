@@ -38,6 +38,11 @@ class Puzzle private (private val tiles: Map[Tile, (Int, Int)]):
                             .sortBy(_._1)
     orderedTiles.size == this.size * this.size - 1 && orderedTiles.forall((p, t) => p == t.n)
 
+  override def equals(other: Any): Boolean =
+    other match 
+      case p: Puzzle => tiles.equals(p.tilesMap)
+      case _         => false
+
   private def areAdjacent(tile1: Tile, tile2: Tile): Boolean =
     val tile1Position = getTilePosition(tile1)
     val tile2Position = getTilePosition(tile2)

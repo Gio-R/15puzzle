@@ -13,7 +13,7 @@ object BaseModel extends Model:
 
   def moveTile(tileNumber: Int): Boolean =
     val newPuzzle = currentPuzzle.moveTile(Number(tileNumber))
-    val response = newPuzzle.equals(currentPuzzle)
+    val response = !newPuzzle.equals(currentPuzzle)
     currentPuzzle = newPuzzle
     response
 
