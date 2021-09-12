@@ -9,7 +9,7 @@ trait Model:
 
   def resetCurrentPuzzle(): Unit
 
-  def getCurrentPuzzleGrid(): Map[Tile, (Int, Int)]
+  def getCurrentPuzzle(): Puzzle
 
   def isCurrentPuzzleResolved(): Boolean
 

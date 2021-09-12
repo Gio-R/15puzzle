@@ -16,7 +16,6 @@ object Main extends IOApp:
   private def app(): HttpApp[IO] = 
     Router.define(
       "/puzzle" -> CORS(PuzzleService(BaseModel).service),
-      "/ping" -> HttpRoutes.of[IO] { case GET -> Root => Ok() }
     )(AssetService.service).orNotFound
 
   private def server(): Resource[IO, Server] =

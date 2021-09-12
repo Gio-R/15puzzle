@@ -20,8 +20,8 @@ object BaseModel extends Model:
   def resetCurrentPuzzle(): Unit = 
     currentPuzzle = initialPuzzle
 
-  def getCurrentPuzzleGrid(): Map[Tile, (Int, Int)] =
-    currentPuzzle.tilesMap
+  def getCurrentPuzzle(): Puzzle =
+    currentPuzzle
 
   def isCurrentPuzzleResolved(): Boolean =
     currentPuzzle.isResolved
