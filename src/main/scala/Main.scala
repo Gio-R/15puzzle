@@ -2,7 +2,10 @@ package puzzle
 
 import cats.effect.{ExitCode, IO, IOApp, Resource}
 import fs2.Stream
+import io.circe.Encoder
+import io.circe.syntax.*
 import org.http4s.{HttpApp, HttpRoutes}
+import org.http4s.circe.CirceEntityCodec.circeEntityEncoder
 import org.http4s.dsl.io.*
 import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.{Router, Server}
@@ -15,7 +18,7 @@ import com.comcast.ip4s.Port
 object Main extends IOApp:
   private def app(): HttpApp[IO] = 
     Router.define(
-      "/puzzle" -> CORS(PuzzleService(BaseModel).service),
+      "/puzzle" -> CORS(PuzzleService(BaseModel).service)
     )(AssetService.service).orNotFound
 
   private def server(): Resource[IO, Server] =

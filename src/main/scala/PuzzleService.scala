@@ -29,7 +29,7 @@ class PuzzleService(model: Model):
 
       case req @ POST -> Root / "new" =>
         req.decode[Int] { i =>
-          Logger(webServerLoggerName).debug("requested new puzzle")
+          Logger(webServerLoggerName).debug(s"requested new puzzle of size $i")
           if i > 3 && scala.math.sqrt(i).isValidInt then
             model.createPuzzle(i)
             Created.apply(model.getCurrentPuzzle().asJson) // TODO: return puzzle representation
@@ -39,12 +39,12 @@ class PuzzleService(model: Model):
 
       case req @ POST -> Root / "current" / "moveTile" =>
         req.decode[Int] { i =>
-          Logger(webServerLoggerName).debug("requested tile move")
+          Logger(webServerLoggerName).debug(s"requested tile $i move")
           try 
             if model.moveTile(i) then
               Ok.apply(model.getCurrentPuzzle().asJson)
             else
-              BadRequest()
+              Ok()
           catch
             case e: Exception => BadRequest()
         }
