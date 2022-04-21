@@ -1,0 +1,30 @@
+name: Code Analysis
+on: 
+  push:
+    branches:
+      - 'develop'
+  pull_request:
+    branches:
+      - 'main'
+jobs:
+  findsecbugs:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "A ${{ github.event_name }} event happened, starting SpotBugs job."
+    - uses: actions/checkout@v3
+    - name: Assemble jar
+      run: sbt assembly
+    # TODO: how to change version of find-sec-bugs? How to set variables?
+    - run: wget https://github.com/find-sec-bugs/find-sec-bugs/releases/download/version-1.12.0/findsecbugs-cli-1.12.0.zip
+    - run: unzip findsecbugs-cli-1.12.0
+    - run: chmod u+x ./findsecbugs.sh
+    - name: Run FindSecBugs checks
+      run: ./findsecbugs.sh -sarif -output "./out.sarif" $GITHUB_WORKSPACE/target/scala-3.0.0/15puzzle.jar
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        # Path to SARIF file relative to the root of the repository
+        sarif_file: out.sarif
+        # Optional category for the results
+        # Used to differentiate multiple results for one commit
+        category: spotbugs
