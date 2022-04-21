@@ -19,7 +19,10 @@ lazy val root = (project in file("."))
       ("org.http4s"     %% "http4s-circe"        % Http4sVersion).cross(CrossVersion.for3Use2_13),
       ("org.http4s"     %% "http4s-dsl"          % Http4sVersion).cross(CrossVersion.for3Use2_13),
       ("io.circe"       %% "circe-parser"        % CirceVersion).cross(CrossVersion.for3Use2_13),
-    )
+    ),
+    assembly / assemblyJarName := "15puzzle.jar",
+    assembly / mainClass := Some("puzzle.Main"),
+    assembly / test := (Test / test).value
   )
 
 // See https://www.scala-sbt.org/1.x/docs/Using-Sonatype.html for instructions on how to publish to Sonatype.
